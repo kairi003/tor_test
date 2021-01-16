@@ -1,1 +1,1 @@
-call venv\Scripts\activate.bat
+call cmd /k .\venv\Scripts\activate.bat
