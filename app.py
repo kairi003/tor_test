@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
 import requests
 from flask import Flask, request
 
@@ -9,17 +10,12 @@ app = Flask(__name__)
 @app.route('/')
 def top_page():
     res = requests.get('https://ipinfo.io')
-    return res.text
+    return res.content
 
 
-@app.route('/tor/')
-def tor():
-    proxies = {
-        'http': 'socks5://127.0.0.1:9050',
-        'https': 'socks5://127.0.0.1:9050'
-    }
-    res = requests.get('https://ipinfo.io', proxies=proxies)
-    return res.text
+@app.route('/torrc')
+def torrc():
+    return Path('torrc').read_bytes()
 
 
 @app.route('/test/')
@@ -28,12 +24,15 @@ def test():
     headers = {
         'User-Agent': request.headers.get('User-Agent')
     }
-    proxies = {
-        'http': 'socks5://127.0.0.1:9050',
-        'https': 'socks5://127.0.0.1:9050'
-    }
+    if 'tor' in request.args:
+        proxies = {
+            'http': 'socks5://127.0.0.1:9050',
+            'https': 'socks5://127.0.0.1:9050'
+        }
+    else:
+        proxies = {}
     res = requests.get(url, headers=headers, proxies=proxies)
-    return res.text
+    return res.content
 
 
 if __name__ == '__main__':
