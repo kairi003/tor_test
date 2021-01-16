@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import requests
-from flask import Flask, request
+from flask import Flask, request, Response
 
 app = Flask(__name__)
 
@@ -15,7 +15,7 @@ def top_page():
 
 @app.route('/torrc')
 def torrc():
-    return Path('torrc').read_bytes()
+    return Response(Path('torrc').read_bytes(), mimetype='text/plain')
 
 
 @app.route('/test/')
